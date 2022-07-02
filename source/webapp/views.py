@@ -4,7 +4,7 @@ from .models import Comment
 
 
 def index_view(request):
-    comments = Comment.objects.filter(status='active')
+    comments = Comment.objects.order_by('-created_at').filter(status='active')
     context = {
         'comments': comments
     }
@@ -20,10 +20,21 @@ def create(request):
     if request.method == "GET":
         return render(request, "create.html")
     else:
+        author = request.POST.get('author')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+        if len(author) < 2:
+            return render(request, "create.html",
+                          {'result': 'error', 'message': 'author minimum 2 characters required'})
+
+        if len(message) > 255:
+            return render(request, "create.html",
+                          {'result': 'error', 'message': 'message maximum 255 characters required'})
+
         c = Comment(
-            author=request.POST.get('author'),
-            email=request.POST.get('email'),
-            message=request.POST.get('message'),
+            author=author,
+            email=email,
+            message=message,
         )
         c.save()
         return redirect('index_view')
@@ -40,9 +51,22 @@ def update(request, id):
         }
         return render(request, "update.html", context)
     else:
+        author = request.POST.get('author')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        if len(author) < 2:
+            return render(request, "create.html",
+                          {'result': 'error', 'message': 'author minimum 2 characters required'})
+
+        if len(message) > 255:
+            return render(request, "create.html",
+                          {'result': 'error', 'message': 'message maximum 255 characters required'})
+
+
         Comment.objects.filter(id=id).update(
-            author=request.POST.get('author'),
-            email=request.POST.get('email'),
-            message=request.POST.get('message')
+            author=author,
+            email=email,
+            message=message,
         )
         return redirect('index_view')

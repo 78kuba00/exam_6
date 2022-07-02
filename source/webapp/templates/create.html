@@ -17,6 +17,15 @@
 <div class="container pt-3">
     <form method="post">
         {% csrf_token %}
+
+        {% if result is not None %}
+            {% if result == 'error' %}
+                <div class="alert alert-danger" role="alert">
+                  {{ message }}
+                </div>
+            {% endif %}
+        {% endif %}
+
         <div class="form-group">
             <label>Author</label>
             <input type="text" name="author" class="form-control" aria-describedby="emailHelp"
