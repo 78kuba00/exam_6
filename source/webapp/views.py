@@ -8,12 +8,13 @@ def index_view(request):
     context = {
         'comments': comments
     }
-    return render(request, "index.html",context)
+    return render(request, "index.html", context)
 
-def delete(request):
-    context = {
-    }
-    return render(request, "index.html",context)
+
+def delete(request, id):
+    Comment.objects.filter(id=id).delete()
+    return redirect('index_view')
+
 
 def create(request):
     if request.method == "GET":
@@ -28,7 +29,20 @@ def create(request):
         return redirect('index_view')
 
 
-def update(request):
-    context = {
-    }
-    return render(request, "index.html",context)
+def update(request, id):
+    if request.method == "GET":
+        comment = Comment.objects.filter(id=id).first()
+        context = {
+            'id': id,
+            'author': comment.author,
+            'email': comment.email,
+            'message': comment.message,
+        }
+        return render(request, "update.html", context)
+    else:
+        Comment.objects.filter(id=id).update(
+            author=request.POST.get('author'),
+            email=request.POST.get('email'),
+            message=request.POST.get('message')
+        )
+        return redirect('index_view')
