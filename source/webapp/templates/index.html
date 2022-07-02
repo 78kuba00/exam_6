@@ -19,8 +19,8 @@
         {% for comment in comments %}
         <div class="col-6" style="width: 18rem;">
             <div>
-                <span><a href="#"> <i class="fa fa-edit"></i> </a></span>
-                <span><a href="#"> <i class="fa fa-times red"></i> </a></span>
+                <span><a href="update/{{comment.id}}"> <i class="fa fa-edit"></i> </a></span>
+                <span><a href="delete/{{comment.id}}"> <i class="fa fa-times red"></i> </a></span>
             </div>
             <div class="card-body">
                 <h5 class="card-title">
